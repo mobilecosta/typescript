@@ -9,7 +9,7 @@ const dynamoDB = new DynamoDB({
 // CRUD table with Document Client (abstraction)
 const documentClient = DynamoDBDocument.from(dynamoDB)
 
-const idSistOrig = "TOTVS12"
+const idSistOrig = "DIMENSA"
 
 async function read() {
         const params = {
@@ -27,7 +27,9 @@ async function read() {
                     console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
                     reject();
                 } else {
-					console.log("ID", data.Items[0].id);
+					data.Items.forEach(function (value) {
+						console.log("ID:", value.id);
+					});
 
                     // continue scanning if we have more items, because
                     // scan can retrieve a maximum of 1MB of data
@@ -42,5 +44,5 @@ async function read() {
             documentClient.scan(params, onScan);
         });
     }
-
-read()	
+	
+read("")
