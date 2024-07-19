@@ -10,15 +10,13 @@ const dynamoDB = new DynamoDB({
 // CRUD table with Document Client (abstraction)
 const documentClient = DynamoDBDocument.from(dynamoDB)
 
-const idSistOrig = "DIMENSA"
+const idSistOrig = "TOTVS12"
 
 async function read() {
         const params = {
             TableName: "stg_invoice_aws",
-            FilterExpression: "idSistOrig = :idSistOrig",
-		    ExpressionAttributeValues: {
-			':idSistOrig': idSistOrig
-		  }
+            FilterExpression: "idSistOrig = :idSistOrig and attribute_not_exists(cancelado)",
+		    ExpressionAttributeValues: { ':idSistOrig': idSistOrig }
         };
 
         let items = [];
@@ -30,9 +28,10 @@ async function read() {
                     reject();
                 } else {
 					data.Items.forEach(function (value) {
-						const content = "ID:" + value.id + "\n";   
-						fs.appendFile('notas.txt', content, { flag: 'a+' }, err => {});
 						console.log("ID:", value.id, " - Item: ", count);
+						
+						// incluir aqui o update
+
 						count = count + 1;
 					});
 
