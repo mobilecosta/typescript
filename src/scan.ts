@@ -9,11 +9,15 @@ const dynamoDB = new DynamoDB({
 // CRUD table with Document Client (abstraction)
 const documentClient = DynamoDBDocument.from(dynamoDB)
 
+const idSistOrig = "TOTVS12"
+
 async function read() {
         const params = {
-            TableName: "prod_invoice_aws"
-            // options can be passed here e.g.
-            // FilterExpression: "#yr between :start_yr and :end_yr",
+            TableName: "prod_invoice_aws",
+            FilterExpression: "idSistOrig = :idSistOrig",
+		    ExpressionAttributeValues: {
+			':idSistOrig': idSistOrig
+		  }
         };
 
         let items = [];
@@ -23,7 +27,7 @@ async function read() {
                     console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
                     reject();
                 } else {
-                    items = items.concat(data.Items);
+					console.log("ID", data.Items[0].id);
 
                     // continue scanning if we have more items, because
                     // scan can retrieve a maximum of 1MB of data
