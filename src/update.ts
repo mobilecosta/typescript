@@ -8,9 +8,18 @@ const dynamoDB = new DynamoDB({
 })
 
 // CRUD table with Document Client (abstraction)
-const documentClient = DynamoDBDocument.from(dynamoDB)
+const client = DynamoDBDocument.from(dynamoDB)
 
 const idSistOrig = "TOTVS12"
+
+async function update(fTablename, idupd) {
+const paramsupd = { TableName: fTablename, 
+					Key: { id: idupd },
+					UpdateExpression: 'set cancelado = :cancelado',
+					ExpressionAttributeValues: { ':cancelado': false } };
+client.update(paramsupd);
+console.log("ID:", idupd, "Update Feito");
+}
 
 async function read() {
         const params = {
@@ -19,8 +28,7 @@ async function read() {
 		    ExpressionAttributeValues: { ':idSistOrig': idSistOrig }
         };
 
-        let items = [];
-		let count = 0;
+ 		let count = 0;
         return new Promise((resolve, reject) => {
             function onScan(err, data) {
                 if (err) {
@@ -29,15 +37,7 @@ async function read() {
                 } else {
 					data.Items.forEach(function (value) {
 						console.log("ID:", value.id, " - Item: ", count);
-						
-						// incluir aqui o update
-						const paramsupd = { TableName: params.TableName, 
-											Key: { id: value.id },
-											UpdateExpression: 'set cancelado = :cancelado',
-											ExpressionAttributeValues: { ':cancelado': false } };
-						documentClient.update(paramsupd).promisse();
-						
-						exit();
+						update(params.TableName, value.id);
 
 						count = count + 1;
 					});
@@ -46,13 +46,12 @@ async function read() {
                     // scan can retrieve a maximum of 1MB of data
                     if (typeof data.LastEvaluatedKey !== "undefined") {
                         params.ExclusiveStartKey = data.LastEvaluatedKey;
-                        documentClient.scan(params, onScan);
+                        client.scan(params, onScan);
                     } else {
-                        resolve(items);
                     }
                 }
             }
-            documentClient.scan(params, onScan);
+            client.scan(params, onScan);
         });
     }
 	
