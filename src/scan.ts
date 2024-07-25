@@ -10,11 +10,11 @@ const dynamoDB = new DynamoDB({
 // CRUD table with Document Client (abstraction)
 const documentClient = DynamoDBDocument.from(dynamoDB)
 
-const idSistOrig = "DIMENSA"
+const idSistOrig = "TOTVS12"
 
 async function read() {
         const params = {
-            TableName: "stg_invoice_aws",
+            TableName: "prod_invoice_aws",
             FilterExpression: "idSistOrig = :idSistOrig",
 		    ExpressionAttributeValues: {
 			':idSistOrig': idSistOrig
@@ -30,8 +30,8 @@ async function read() {
                     reject();
                 } else {
 					data.Items.forEach(function (value) {
-						const content = "ID:" + value.id + "\n";   
-						fs.appendFile('notas.txt', content, { flag: 'a+' }, err => {});
+						const content = "insert into webhook(id) values('" + value.id + "');\n";
+						fs.appendFile('insert.sql', content, { flag: 'a+' }, err => {});
 						console.log("ID:", value.id, " - Item: ", count);
 						count = count + 1;
 					});

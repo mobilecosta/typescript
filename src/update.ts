@@ -31,6 +31,13 @@ async function read() {
 						console.log("ID:", value.id, " - Item: ", count);
 						
 						// incluir aqui o update
+						const paramsupd = { TableName: params.TableName, 
+											Key: { id: value.id },
+											UpdateExpression: 'set cancelado = :cancelado',
+											ExpressionAttributeValues: { ':cancelado': false } };
+						documentClient.update(paramsupd).promisse();
+						
+						exit();
 
 						count = count + 1;
 					});
@@ -49,4 +56,4 @@ async function read() {
         });
     }
 	
-read("")
+read()
