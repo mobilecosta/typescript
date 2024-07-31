@@ -14,7 +14,7 @@ const idSistOrig = "TOTVS12"
 
 async function read() {
         const params = {
-            TableName: "prod_invoice_aws",
+            TableName: "stg_invoice_aws",
             FilterExpression: "idSistOrig = :idSistOrig",
 		    ExpressionAttributeValues: {
 			':idSistOrig': idSistOrig
